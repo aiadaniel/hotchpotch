@@ -5,6 +5,7 @@
     <string name="title_activity_base">BaseActivity</string>
 
     <string name="retry_refresh">点我一下 重新加载</string>
+    <string name="loading">加载更多</string>
 
     <!-- 共享过度动画 -->
     <string name="transition_photos">transition_animation_photos</string>

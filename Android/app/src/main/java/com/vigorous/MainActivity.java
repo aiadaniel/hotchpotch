@@ -10,6 +10,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 
 import com.vigorous.adapter.ForumPagerAdapter;
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener{
+    private static final String TAG = MainActivity.class.getSimpleName();
 
     private TabLayout mTabLayout;
     private Toolbar mToolbar;
@@ -87,7 +89,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
             @Override
             public void onPageSelected(int position) {
-
+                Log.d(TAG,"on page selected " + position);
             }
 
             @Override
