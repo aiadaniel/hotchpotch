@@ -1,5 +1,6 @@
 package com.vigorous.adapter;
 
+import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,6 +29,14 @@ public class ForumListAdapter extends RecyclerView.Adapter {
     public static final int VIEW_FOOTER = 2;
     private List<Post> mPostList;
     private boolean mIsShowFooter = false;
+    private OnMyItemClickListener mOnMyItemClickListener;
+    public void setOnMyItemClickListener(OnMyItemClickListener listener) {
+        mOnMyItemClickListener = listener;
+    }
+
+    public static interface OnMyItemClickListener {
+        void onItemClick(View v,int position);
+    }
 
     public ForumListAdapter(List<Post> postList) {
         mPostList = postList;
@@ -36,6 +45,10 @@ public class ForumListAdapter extends RecyclerView.Adapter {
     public void setPostList(List<Post> postList) {
         mPostList = postList;
         notifyDataSetChanged();
+    }
+
+    public List<Post> getPostList() {
+        return mPostList;
     }
 
     public void addPostList(List<Post> postList) {
@@ -49,7 +62,15 @@ public class ForumListAdapter extends RecyclerView.Adapter {
         switch (viewType) {
             case VIEW_NORMAL:
                 View rootview = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_post,parent,false);
-                ItemViewHolder holder = new ItemViewHolder(rootview);
+                final ItemViewHolder holder = new ItemViewHolder(rootview);
+                if (mOnMyItemClickListener != null) {
+                    holder.itemView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            mOnMyItemClickListener.onItemClick(v,holder.getLayoutPosition());
+                        }
+                    });
+                }
                 return holder;
             case VIEW_FOOTER:
                 View footview = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_footer,parent,false);
@@ -75,8 +96,6 @@ public class ForumListAdapter extends RecyclerView.Adapter {
 
     private void setDataToView(ItemViewHolder holder,int position) {
         Post post = mPostList.get(position);
-        holder.mTvTitle.setText(post.getTitle());
-        holder.mTvContent.setText(post.getContent());
         holder.mTvNickname.setText(post.getAuthor().getNickname());
         if (post.getAuthor().getAvatar() != null && !"null".equals(post.getAuthor().getAvatar())) {
             Log.d(TAG,"==will down "+ post.getAuthor().getAvatar());
@@ -86,10 +105,20 @@ public class ForumListAdapter extends RecyclerView.Adapter {
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .placeholder(R.mipmap.ic_launcher)
                     .error(R.drawable.ic_broken_image_black_24dp)
-                    .into(holder.mImageView);
+                    .into(holder.mIvAvatar);
         } else {
-            holder.mImageView.setImageResource(R.drawable.ic_broken_image_black_24dp);
+            holder.mIvAvatar.setImageResource(R.drawable.ic_broken_image_black_24dp);
         }
+        holder.mTvTitle.setText(post.getTitle());
+        holder.mTvContent.setText(post.getContent());
+        int bound = 45;
+        Drawable shareLeftDrawable = holder.mTvShare.getCompoundDrawables()[0];
+        shareLeftDrawable.setBounds(0,0,bound,bound);
+        holder.mTvShare.setText(""+999);
+        Drawable replyLeftDrawable = holder.mTvReply.getCompoundDrawables()[0];
+        replyLeftDrawable.setBounds(0,0,bound,bound);
+        holder.mTvReply.setText(""+15);
+        holder.mTvPriseNum.setText(""+8267);
     }
 
     @Override
@@ -115,17 +144,29 @@ public class ForumListAdapter extends RecyclerView.Adapter {
     }
 
     class ItemViewHolder extends RecyclerView.ViewHolder {
+        ImageView mIvAvatar;
         TextView mTvNickname;
         TextView mTvTitle;
         TextView mTvContent;
-        ImageView mImageView;
+        ImageView mIvContent;
+        TextView mTvShare;
+        TextView mTvReply;
+        ImageView mIvPrise;
+        ImageView mIvDown;
+        TextView mTvPriseNum;
 
         public ItemViewHolder(View itemView) {
             super(itemView);
-            mTvNickname = (TextView) itemView.findViewById(R.id.tv_nickname);
+            mIvAvatar = (ImageView) itemView.findViewById(R.id.iv_avatar);
+            mTvNickname = (TextView) itemView.findViewById(R.id.tv_username);
             mTvContent = (TextView) itemView.findViewById(R.id.tv_content);
             mTvTitle = (TextView) itemView.findViewById(R.id.tv_title);
-            mImageView = (ImageView) itemView.findViewById(R.id.iv_avatar);
+            mIvContent = (ImageView) itemView.findViewById(R.id.iv_content);
+            mTvShare = (TextView) itemView.findViewById(R.id.tv_share);
+            mTvReply = (TextView) itemView.findViewById(R.id.tv_reply);
+            mIvPrise = (ImageView) itemView.findViewById(R.id.iv_prise);
+            mIvDown = (ImageView) itemView.findViewById(R.id.iv_down);
+            mTvPriseNum = (TextView) itemView.findViewById(R.id.tv_prise_num);
         }
     }
 

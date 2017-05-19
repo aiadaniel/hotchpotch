@@ -1,4 +1,4 @@
-package com.vigorous;
+package com.vigorous.fragments;
 
 
 import android.support.v4.app.Fragment;

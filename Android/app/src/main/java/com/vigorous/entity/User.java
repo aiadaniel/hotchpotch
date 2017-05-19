@@ -1,10 +1,13 @@
 package com.vigorous.entity;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by lxm.
  */
 
-public class User {
+public class User implements Parcelable{
     String uid;
     String nickname;
     String avatar;
@@ -40,5 +43,37 @@ public class User {
 
     public void setSex(String sex) {
         this.sex = sex;
+    }
+
+    protected User(Parcel in) {
+        uid = in.readString();
+        nickname = in.readString();
+        avatar = in.readString();
+        sex = in.readString();
+    }
+
+    public static final Creator<User> CREATOR = new Creator<User>() {
+        @Override
+        public User createFromParcel(Parcel in) {
+            return new User(in);
+        }
+
+        @Override
+        public User[] newArray(int size) {
+            return new User[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(uid);
+        dest.writeString(nickname);
+        dest.writeString(avatar);
+        dest.writeString(sex);
     }
 }

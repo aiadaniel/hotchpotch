@@ -1,10 +1,13 @@
 package com.vigorous.entity;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by lxm.
  */
 
-public class Post {
+public class Post implements Parcelable {
     String postid;
     String title;
     String content;
@@ -76,5 +79,45 @@ public class Post {
 
     public void setReplyCount(int replyCount) {
         this.replyCount = replyCount;
+    }
+
+    protected Post(Parcel in) {
+        postid = in.readString();
+        title = in.readString();
+        content = in.readString();
+        author = in.readParcelable(User.class.getClassLoader());
+        authorLastReplied = in.readParcelable(User.class.getClassLoader());
+        prise = in.readInt();
+        down = in.readInt();
+        replyCount = in.readInt();
+    }
+
+    public static final Creator<Post> CREATOR = new Creator<Post>() {
+        @Override
+        public Post createFromParcel(Parcel in) {
+            return new Post(in);
+        }
+
+        @Override
+        public Post[] newArray(int size) {
+            return new Post[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(postid);
+        dest.writeString(title);
+        dest.writeString(content);
+        dest.writeParcelable(author,flags);
+        dest.writeParcelable(authorLastReplied,flags);
+        dest.writeInt(prise);
+        dest.writeInt(down);
+        dest.writeInt(replyCount);
     }
 }

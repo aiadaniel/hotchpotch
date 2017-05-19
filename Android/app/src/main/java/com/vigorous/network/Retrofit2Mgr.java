@@ -2,6 +2,8 @@ package com.vigorous.network;
 
 import com.vigorous.MyApp;
 import com.vigorous.entity.Post;
+import com.vigorous.entity.Reply;
+import com.vigorous.entity.ResultModel;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,6 +13,7 @@ import java.util.concurrent.TimeUnit;
 
 import okhttp3.Cache;
 import okhttp3.OkHttpClient;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Retrofit;
@@ -63,8 +66,30 @@ public class Retrofit2Mgr {
     }
 
     //==============================================================================================
-    public void getPostList(String boardid, int index, Callback<List<Post>> cb) throws IOException {
-        Call<List<Post>> call = mForumService.getPostList(boardid,index);
+    public void getPostList(String boardid, int index, int lastid,Callback<List<Post>> cb) throws IOException {
+        Call<List<Post>> call = mForumService.getPostList(boardid,index,lastid);
+        call.enqueue(cb);
+    }
+
+    //==============================================================================================
+    public void regist(String nickname,String pass,Callback<ResultModel> cb) {
+        Call<ResultModel> call = mForumService.regist(nickname,pass);
+        call.enqueue(cb);
+    }
+
+    public void login(String nickname, String pass, Callback<ResultModel> cb) {
+        Call<ResultModel> call = mForumService.login(nickname,pass);
+        call.enqueue(cb);
+    }
+
+    public void loginByToken(String token,Callback<ResponseBody> cb) {
+        Call<ResponseBody> call = mForumService.loginbytoken(token);
+        call.enqueue(cb);
+    }
+
+    //==============================================================================================
+    public void getReplyList(String postid, Callback<List<Reply>> cb) {
+        Call<List<Reply>> call = mForumService.getReplyList(postid);
         call.enqueue(cb);
     }
 }

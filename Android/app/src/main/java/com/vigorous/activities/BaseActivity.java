@@ -1,4 +1,4 @@
-package com.vigorous;
+package com.vigorous.activities;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;

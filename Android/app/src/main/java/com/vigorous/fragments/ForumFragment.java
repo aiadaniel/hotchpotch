@@ -1,5 +1,6 @@
 package com.vigorous.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -13,8 +14,8 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.vigorous.BaseFragment;
 import com.vigorous.R;
+import com.vigorous.activities.PostActivity;
 import com.vigorous.adapter.ForumListAdapter;
 import com.vigorous.entity.Post;
 import com.vigorous.network.Retrofit2Mgr;
@@ -76,7 +77,7 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
     private void initView() {
         mSwipeRefreshLayout.setOnRefreshListener(this);
         mSwipeRefreshLayout.setColorSchemeColors(getActivity().getResources().getIntArray(R.array.gplus_colors));
-        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setHasFixedSize(false);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(),LinearLayoutManager.VERTICAL,false));
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -99,8 +100,18 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
             }
         });
         //// TODO: 2017/5/12
-        List<Post> posts = new ArrayList<>();
+        final List<Post> posts = new ArrayList<>();
         mForumListAdapter = new ForumListAdapter(posts);
+        mForumListAdapter.setOnMyItemClickListener(new ForumListAdapter.OnMyItemClickListener() {
+            @Override
+            public void onItemClick(View v, int position) {
+                Log.d(TAG,"on recycleview item "+ position);
+                Intent intent = new Intent(getActivity(), PostActivity.class);
+                //pass post info to new activity
+                intent.putExtra(PostActivity.POST_EXTRA,mForumListAdapter.getPostList().get(position));
+                startActivity(intent);
+            }
+        });
         mRecyclerView.setAdapter(mForumListAdapter);
         loadData();
     }
@@ -112,7 +123,7 @@ public class ForumFragment extends BaseFragment implements SwipeRefreshLayout.On
     private void loadData() {
         //OkUtils.okAsyncGet();
         try {
-            Retrofit2Mgr.getInstance(Constant.HOTCH_POST).getPostList(mBoardId, mStartIndex, new Callback<List<Post>>() {
+            Retrofit2Mgr.getInstance(Constant.HOTCH_POST).getPostList(mBoardId, mStartIndex,0,new Callback<List<Post>>() {
                 @Override
                 public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
                     Log.d(TAG,"post list res code "+ response.code());
