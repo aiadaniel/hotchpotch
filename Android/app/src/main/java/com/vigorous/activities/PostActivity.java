@@ -66,6 +66,7 @@ public class PostActivity extends BaseActivity {
         if (mPost != null) {
             initPostView();
             initRecycleView();
+            Log.d(TAG,"get post " + mPost.getId() + " " + mPost.getAuthor());
         }
     }
 
@@ -120,11 +121,13 @@ public class PostActivity extends BaseActivity {
     }
 
     private void loadData() {
-        Log.d(TAG,"postid " + mPost.getPostid());
-        Retrofit2Mgr.getInstance(Constant.HOTCH_REPLY).getReplyList(mPost.getPostid(), new Callback<List<Reply>>() {
+        Log.d(TAG,"postid " + mPost.getId());
+        Retrofit2Mgr.getInstance(Constant.HOTCH_REPLY).getReplyList(mPost.getId(), new Callback<List<Reply>>() {
             @Override
             public void onResponse(Call<List<Reply>> call, Response<List<Reply>> response) {
                 Log.d(TAG,"get reply list " + response.code());
+                List<Reply> replies = response.body();
+                mPostReplyAdapter.setReplyList(replies);
             }
 
             @Override

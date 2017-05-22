@@ -8,7 +8,7 @@ import android.os.Parcelable;
  */
 
 public class Post implements Parcelable {
-    String postid;
+    String id;
     String title;
     String content;
     User author;
@@ -17,12 +17,12 @@ public class Post implements Parcelable {
     int down;
     int replyCount;
 
-    public String getPostid() {
-        return postid;
+    public String getId() {
+        return id;
     }
 
-    public void setPostid(String postid) {
-        this.postid = postid;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getTitle() {
@@ -82,7 +82,7 @@ public class Post implements Parcelable {
     }
 
     protected Post(Parcel in) {
-        postid = in.readString();
+        id = in.readString();
         title = in.readString();
         content = in.readString();
         author = in.readParcelable(User.class.getClassLoader());
@@ -111,7 +111,7 @@ public class Post implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(postid);
+        dest.writeString(id);
         dest.writeString(title);
         dest.writeString(content);
         dest.writeParcelable(author,flags);
